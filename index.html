@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proteggi Sequenze</title>
+  <style>
+    /* --- Form iniziale --- */
+    #centro {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      text-align: center;
+      color: white;
+    }
+    #titolo {
+      font-family: 'Courier New', monospace;
+      font-size: 50px;
+      margin: -25px;
+      display: block;
+      white-space: nowrap;
+      font-weight: lighter;
+    }
+    #codice {
+      margin-top: 20px;
+      padding: 8px;
+      font-size: 16px;
+      text-align: center;
+       border-radius: 0px;
+      border-style: none;
+    }
+    #bottone {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 0px;
+      border-style: none;
+    }
+    /* Messaggio di errore */
+    #errorMsg {
+      color: #f55;
+      font-size: 14px;
+      margin-top: 10px;
+      visibility: hidden;  /* nascosto di default */
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* --- Modal full-screen inizialmente nascosto --- */
+    #modal {
+      display: none;            
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    /* Pulsante X */
+    #closeBtn {
+      position: absolute;
+      top: 20px; right: 30px;
+      font-size: 30px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    #closeBtn:hover { color: red; }
+
+    /* Immagine cliccabile */
+    #slideshowImage {
+      max-width: 90%;
+      max-height: 80vh;
+      cursor: pointer;
+    }
+    
+    body{
+        background-color: black;
+    }
+
+    #bottone:active{
+        background-color: rgb(199, 199, 199);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="centro">
+    <h1 id="titolo">INSERIRE CODICE</h1>
+    <input type="text" id="codice" placeholder="" maxlength="20"><br>
+    <button id="bottone">Vai</button>
+    <!-- messaggio di errore -->
+    <p id="errorMsg">Codice non riconosciuto</p>
+  </div>
+
+  <div id="modal">
+    <button id="closeBtn">X</button>
+    <img id="slideshowImage" src="" alt="Slideshow">
+    <audio id="beep" src="slide.mp3" preload="auto"></audio>
+  </div>
+
+  <script>
+    const sequences = {
+      "Atto Primo": [
+        "d11.jpg",
+        "d21.jpg",
+        "d31.jpg",
+        "d41.jpg",
+        "d51.jpg",
+        "d61.jpg",
+        "d71.jpg",
+        "d81.jpg",
+        "d91.jpg",
+        "d101.jpg",
+        "d111.jpg",
+        "d121.jpg",
+        "d131.jpg",
+        "d141.jpg",
+        "d151.png",
+      ],
+      "tunello": [ 
+        "tunella.png",
+      ],
+
+      "Tunello": [
+        "tunella.png",
+      ],
+
+      "ciao": [
+        "https://placedog.net/800/500?id=1",
+        "https://placedog.net/801/500?id=2",
+        "https://placedog.net/802/500?id=3"
+      ]
+    };
+    let currentSequence = [], currentIndex = 0;
+
+    const errorMsg = document.getElementById("errorMsg");
+
+    document.getElementById("bottone").addEventListener("click", () => {
+      const pwd = document.getElementById("codice").value;
+      if (sequences[pwd]) {
+        // reset messaggio di errore
+        errorMsg.style.visibility = "hidden";
+        currentSequence = sequences[pwd];
+        currentIndex = 0;
+        document.getElementById("slideshowImage").src = currentSequence[0];
+        document.getElementById("modal").style.display = "flex";
+      } else {
+        // mostra messaggio di errore
+        errorMsg.style.visibility = "visible";
+        setTimeout(() => {
+  errorMsg.style.visibility = "hidden";
+}, 2000);
+      }
+    });
+
+    document.getElementById("slideshowImage").addEventListener("click", () => {
+      if (!currentSequence.length) return;
+      currentIndex = (currentIndex + 1) % currentSequence.length;
+      document.getElementById("slideshowImage").src = currentSequence[currentIndex];
+      const beep = document.getElementById("beep");
+      beep.currentTime = 0;
+      beep.play();
+    });
+
+    document.getElementById("closeBtn").addEventListener("click", () => {
+      document.getElementById("modal").style.display = "none";
+      document.getElementById("codice").value = "";
+      document.getElementById("slideshowImage").src = "";
+    });
+  </script>
+
+</body>
+</html>
